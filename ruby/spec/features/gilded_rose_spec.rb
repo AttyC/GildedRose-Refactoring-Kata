@@ -28,10 +28,10 @@ describe 'GildedRose' do
     end
 
     describe 'Sulfuras, Hand of Ragnaros' do
-      it 'quality stays the same' do
-        items = [Item.new(name="Sulfuras, Hand of Ragnaros", sell_in=0, quality=20)]
+      it 'quality is always 80' do
+        items = [Item.new(name="Sulfuras, Hand of Ragnaros", sell_in=0, quality=80)]
         GildedRose.new(items).update_quality()
-        expect(items[0].quality).to eq 20
+        expect(items[0].quality).to eq 80
       end
       it 'has no sell by date' do
         items = [Item.new(name="Sulfuras, Hand of Ragnaros", sell_in=0, quality=20)]
