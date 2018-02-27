@@ -1,7 +1,6 @@
 describe 'GildedRose' do
 
   describe "#update_quality" do
-    
     describe 'Generic products' do
       it 'product reduces in quality closer to sell by date' do
         items = [Item.new(name="+5 Dexterity Vest", sell_in=10, quality=20)]
@@ -14,6 +13,26 @@ describe 'GildedRose' do
         expect(items[0].quality).to eq 18
       end
     end
+
+    describe 'Sulfuras, Hand of Ragnaros' do
+      it 'quality stays the same' do
+        items = [Item.new(name="Sulfuras, Hand of Ragnaros", sell_in=0, quality=20)]
+        GildedRose.new(items).update_quality()
+        expect(items[0].quality).to eq 20
+      end
+      it 'has no sell by date' do
+        items = [Item.new(name="Sulfuras, Hand of Ragnaros", sell_in=0, quality=20)]
+        GildedRose.new(items).update_quality()
+        expect(items[0].sell_in).to eq 0
+      end
+    end
+
+    it 'Aged Brie increases in quality closer to sell by date' do
+      items = [Item.new(name="Aged Brie", sell_in=10, quality=20)]
+      GildedRose.new(items).update_quality()
+      expect(items[0].quality).to eq 21
+    end
+
   end
 
 end
