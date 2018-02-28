@@ -23,6 +23,11 @@ describe GildedRose do
         allow(subject).to receive(:update_quality)
         expect { subject.upgrade_by(items[0], 1) }.to change{ items[0].quality }.by 1
       end
+      it 'Aged Brie increases 2x quality after sell by date' do
+        items = [Item.new(name='Aged Brie', sell_in=0, quality=20)]
+        allow(subject).to receive(:update_quality)
+        expect { subject.upgrade_by(items[0], 2) }.to change{ items[0].quality }.by 2
+      end
     end
 
     describe 'Conjured' do
