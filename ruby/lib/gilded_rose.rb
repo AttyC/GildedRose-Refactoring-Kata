@@ -1,6 +1,7 @@
 require_relative 'item'
 
 class GildedRose
+  attr_reader :item
 
   def initialize(items)
     @items = items
@@ -9,40 +10,45 @@ class GildedRose
   def update_quality()
     @items.each do |item|
 
-      #1 if generic item, reduce quality // DEFAULT
-      if item.name != 'Aged Brie' and item.name != 'Backstage passes to a TAFKAL80ETC concert' and item.name != 'Sulfuras, Hand of Ragnaros'
-        item.quality -= 1 if item.quality > 0
-      else
-        # increment quality
-        item.quality = item.quality + 1 if item.quality < 50
+      # First - update tests with stubs
+      # create stub for Item
+      # Sulfuras special case
+      # edge cases?
+      # README
 
-        #2 Backstage passes - extra increments before sell by date
-        if item.name == 'Backstage passes to a TAFKAL80ETC concert'
-          if item.sell_in.between?(6, 11)
-            item.quality += 1
-          elsif item.sell_in < 6
-            item.quality += 2
-          end
+    case item.name
+    when 'Conjured'
+      degrade_by(item, 2) if item.quality > 0
+
+    when 'Backstage passes to a TAFKAL80ETC concert'
+      upgrade_by(item, 1) if item.quality < 50
+      upgrade_by(item, 1) if item.sell_in.between?(6, 11)
+      upgrade_by(item, 2) if item.sell_in < 6
+
+      degrade_by(item, item.quality)
+
+    when 'Aged Brie'
+      upgrade_by(item, 1) if item.quality < 50
+
+    else   # GENERIC
+      item.sell_in -= 1 unless item.name == 'Sulfuras, Hand of Ragnaros'
+
+      if item.quality > 0
+        degrade_by(item, 1)
+        if item.sell_in < 0
+          degrade_by(item, 1)
         end
       end
-      #3 reduce sell_in date for all excpet Sulfuras
-      item.sell_in = item.sell_in - 1 unless item.name == 'Sulfuras, Hand of Ragnaros'
 
-      if item.sell_in < 0
-        if item.name != 'Aged Brie'
-          if item.name != 'Backstage passes to a TAFKAL80ETC concert'
-            if item.quality > 0
-              if item.name != 'Sulfuras, Hand of Ragnaros'
-                item.quality = item.quality - 1
-              end
-            end
-          else
-            item.quality -= item.quality
-          end
-        else
-          item.quality += 1 if item.quality < 50
-        end
-      end
-    end
+    end # end when
+  end
+end
+
+  def degrade_by(item, number)
+    item.quality -= number
+  end
+
+  def upgrade_by(item, number)
+    item.quality += number
   end
 end
